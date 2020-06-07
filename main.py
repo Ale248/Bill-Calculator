@@ -8,22 +8,59 @@ class Window(Frame):
         self.init_window()
 
     def init_window(self):
+        self.entryList = list()
+        self.columnNum = 2
+        self.currentRow = 0
+
         self.master.title("GUI")
         self.pack(fill=BOTH, expand=1)
         # quitButton = Button(self, text="Exit", command=self.client_exit)
         # quitButton.place(x=0, y=0)
 
-        menu = Menu(self.master)
-        self.master.config(menu=menu)
+        # menu = Menu(self.master)
+        # self.master.config(menu=menu)
+        #
+        # file = Menu(menu)
+        # file.add_command(label="Exit", command=self.client_exit)
+        # menu.add_cascade(label="File", menu=file)
+        #
+        # edit = Menu(menu)
+        # edit.add_command(label="Show Img", command=self.showImg)
+        # edit.add_command(label="Show Text", command=self.showText)
+        # menu.add_cascade(label="Edit", menu=edit)
 
-        file = Menu(menu)
-        file.add_command(label="Exit", command=self.client_exit)
-        menu.add_cascade(label="File", menu=file)
+        # TOP FRAME
+        self.topFrame = Frame(self, bg="Blue")
+        self.topFrame.pack(side=TOP, fill=BOTH, expand=1)
 
-        edit = Menu(menu)
-        edit.add_command(label="Show Img", command=self.showImg)
-        edit.add_command(label="Show Text", command=self.showText)
-        menu.add_cascade(label="Edit", menu=edit)
+        # self.blueButton = Button(self.topFrame, text="Blue", fg="Blue")
+        # self.blueButton.pack(side=TOP, anchor=NW)
+        #
+        # self.blackButton = Button(self.topFrame, text="Black", fg="Black")
+        # self.blackButton.pack(side=TOP, anchor=NW)
+        # self.entry1 = Entry(self.topFrame)
+        # self.entry1.pack(side=TOP, anchor=NW)
+
+
+        # BOTTOM FRAME
+        self.bottomFrame = Frame(self, bg="Red")
+        self.bottomFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
+
+        self.addButton = Button(self.bottomFrame, text="Add", fg="Red", command=self.addEntry)
+        self.addButton.pack(side=LEFT)
+
+    def addEntry(self):
+        entryRow = list()
+        for i in range(self.columnNum):
+            oneEntry = Entry(self.topFrame)
+            oneEntry.grid(row = self.currentRow, column = i)
+        # topEntry = Entry(self.topFrame)
+        # topEntry.insert(END, str(len(self.entryList)))
+        # topEntry.pack(side=TOP, anchor=NW)
+        # self.entryList.append(topEntry)
+
+        self.currentRow += 1
+        print(self.topFrame.grid_size())
 
     def showImg(self):
         load = Image.open("pic.jpg").resize((100, 100))
@@ -41,30 +78,21 @@ class Window(Frame):
         exit()
 
 
-root = Tk()
-# root.geometry("800x600+0+0")
-# Gets the requested values of the height and widht.
-# windowWidth = root.winfo_reqwidth()
-# windowHeight = root.winfo_reqheight()
-# print("Width",windowWidth,"Height",windowHeight)
-#
-# # Gets both half the screen width/height and window width/height
-# positionRight = int(root.winfo_screenwidth()/2 - windowWidth/2)
-# positionDown = int(root.winfo_screenheight()/2 - windowHeight/2)
-#
-# # Positions the window in the center of the page.
-# root.geometry("800x600+{}+{}".format(positionRight, positionDown))
+window = Tk()
 
-rootWidth = 800
-rootHeight = 600
+windowWidth = 800
+windowHeight = 600
 
-windowWidth = root.winfo_screenwidth()
-windowHeight = root.winfo_screenheight()
+# display window in center of screen
+# -------------
+screenWidth = window.winfo_screenwidth()
+screenHeight = window.winfo_screenheight()
 
-positionRight = int(windowWidth/2 - rootWidth/2)
-positionDown = int(windowHeight/2 - rootHeight/2)
+positionRight = int(screenWidth/2 - windowWidth/2)
+positionDown = int(screenHeight/2 - windowHeight/2)
 
-root.geometry("{}x{}+{}+{}".format(rootWidth, rootHeight, positionRight, positionDown))
+window.geometry("{}x{}+{}+{}".format(windowWidth, windowHeight, positionRight, positionDown))
+# -------------
 
-app = Window(root)
-root.mainloop()
+app = Window(window)
+window.mainloop()

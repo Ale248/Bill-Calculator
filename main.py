@@ -12,10 +12,11 @@ class Window(Frame):
         self.pady = 5
 
         self.entryList = list()
-        self.columnNum = 2
+        self.columnNum = 3
         self.currentRow = 3
 
         self.master.title("TMobile Bill Calculator")
+        self.master.resizable(False, False)
         self.pack(fill=BOTH, expand=1)
 
         # TOP FRAME
@@ -23,10 +24,10 @@ class Window(Frame):
         self.topFrame.pack(side=TOP, fill=BOTH, expand=1)
 
         self.priceLabel = Label(self.topFrame, text="Price:")
-        self.priceLabel.grid(row=0, column=5, padx=self.padx, pady=self.pady)
+        self.priceLabel.grid(row=0, column=2, padx=self.padx, pady=self.pady)
 
         self.priceEntry = Entry(self.topFrame)
-        self.priceEntry.grid(row=0, column=6, padx=self.padx, pady=self.pady)
+        self.priceEntry.grid(row=0, column=3, padx=self.padx, pady=self.pady)
 
         self.nameLabel = Label(self.topFrame, text="Name")
         self.nameLabel.grid(row=1, column=0, padx=self.padx, pady=self.pady)
@@ -34,22 +35,35 @@ class Window(Frame):
         self.baseLabel = Label(self.topFrame, text="Base")
         self.baseLabel.grid(row=1, column=1, padx=self.padx, pady=self.pady)
 
+        self.totalLabel = Label(self.topFrame, text="Total")
+        self.totalLabel.grid(row=1, column=2, padx=self.padx, pady=self.pady)
+
         self.firstNameEntry = Entry(self.topFrame)
         self.firstNameEntry.grid(row=2, column=0, padx=self.padx, pady=self.pady)
 
         self.firstBaseEntry = Entry(self.topFrame, state=DISABLED)
         self.firstBaseEntry.grid(row=2, column=1, padx=self.padx, pady=self.pady)
 
+        self.firstTotalEntry = Entry(self.topFrame, state=DISABLED)
+        self.firstTotalEntry.grid(row=2, column=2, padx=self.padx, pady=self.pady)
+
         # BOTTOM FRAME
         self.bottomFrame = Frame(self)
         # self.bottomFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
         self.bottomFrame.pack(side=BOTTOM, fill=BOTH)
 
-        self.addButton = Button(self.bottomFrame, text="Add", fg="Red", command=self.addEntry, width=40, height=10)
-        self.addButton.pack(side=LEFT)
+        self.addPersonButton = Button(self.bottomFrame, text="Add line", fg="Red", command=self.addEntry, width=36, height=10)
+        self.addPersonButton.pack(side=LEFT, padx=3)
 
-        self.printButton = Button(self.bottomFrame, text="Print", fg="Blue", command=self.printEntries, width=40, height=10)
-        self.printButton.pack(side=RIGHT)
+        self.printButton = Button(self.bottomFrame, text="Print", fg="Blue", command=self.printEntries, width=36, height=10)
+        self.printButton.pack(side=LEFT, padx=3)
+
+        self.calculateButton = Button(self.bottomFrame, text="Calculate", fg="Black", command=self.calculateEntries, width=36, height=10)
+        self.calculateButton.pack(side=LEFT, padx=3)
+
+
+    def calculateEntries(self):
+        pass
 
     def addEntry(self):
         # entryRow = list()
@@ -59,10 +73,13 @@ class Window(Frame):
         if self.currentRow < 12:
 
             nameEntry = Entry(self.topFrame)
-            nameEntry.grid(row = self.currentRow, column = 0, padx=self.padx, pady=self.pady)
+            nameEntry.grid(row=self.currentRow, column=0, padx=self.padx, pady=self.pady)
 
             baseEntry = Entry(self.topFrame, state=DISABLED)
-            baseEntry.grid(row = self.currentRow, column = 1, padx=self.padx, pady=self.pady)
+            baseEntry.grid(row=self.currentRow, column=1, padx=self.padx, pady=self.pady)
+
+            totalEntry = Entry(self.topFrame, state=DISABLED)
+            totalEntry.grid(row=self.currentRow, column=2, padx=self.padx, pady=self.pady)
 
             self.currentRow += 1
         # print(self.topFrame.grid_size())

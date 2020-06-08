@@ -15,7 +15,7 @@ class Window(Frame):
         self.columnNum = 2
         self.currentRow = 3
 
-        self.master.title("GUI")
+        self.master.title("TMobile Bill Calculator")
         self.pack(fill=BOTH, expand=1)
 
         # TOP FRAME
@@ -78,21 +78,23 @@ class Window(Frame):
         exit()
 
 
-window = Tk()
+if __name__ == '__main__':
+    window = Tk()
 
-windowWidth = 800
-windowHeight = 600
+    windowWidth = 800
+    windowHeight = 600
 
-# display window in center of screen
-# -------------
-screenWidth = window.winfo_screenwidth()
-screenHeight = window.winfo_screenheight()
+    # display window in center of screen
+    # -------------
+    screenWidth = window.winfo_screenwidth()
+    screenHeight = window.winfo_screenheight()
 
-positionRight = int(screenWidth/2 - windowWidth/2)
-positionDown = int(screenHeight/2 - windowHeight/2)
+    positionRight = int(screenWidth/2 - windowWidth/2)
+    positionDown = int(screenHeight/2 - windowHeight/2)
 
-window.geometry("{}x{}+{}+{}".format(windowWidth, windowHeight, positionRight, positionDown))
-# -------------
+    window.geometry("{}x{}+{}+{}".format(windowWidth, windowHeight, positionRight, positionDown))
+    # -------------
 
-app = Window(window)
-window.mainloop()
+
+    app = Window(window)
+    window.mainloop()

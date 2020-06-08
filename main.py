@@ -8,71 +8,71 @@ class Window(Frame):
         self.init_window()
 
     def init_window(self):
+        self.padx = 5
+        self.pady = 5
+
         self.entryList = list()
         self.columnNum = 2
-        self.currentRow = 0
+        self.currentRow = 3
 
         self.master.title("GUI")
         self.pack(fill=BOTH, expand=1)
-        # quitButton = Button(self, text="Exit", command=self.client_exit)
-        # quitButton.place(x=0, y=0)
-
-        # menu = Menu(self.master)
-        # self.master.config(menu=menu)
-        #
-        # file = Menu(menu)
-        # file.add_command(label="Exit", command=self.client_exit)
-        # menu.add_cascade(label="File", menu=file)
-        #
-        # edit = Menu(menu)
-        # edit.add_command(label="Show Img", command=self.showImg)
-        # edit.add_command(label="Show Text", command=self.showText)
-        # menu.add_cascade(label="Edit", menu=edit)
 
         # TOP FRAME
-        self.topFrame = Frame(self, bg="Blue")
+        self.topFrame = Frame(self)
         self.topFrame.pack(side=TOP, fill=BOTH, expand=1)
 
-        # self.blueButton = Button(self.topFrame, text="Blue", fg="Blue")
-        # self.blueButton.pack(side=TOP, anchor=NW)
-        #
-        # self.blackButton = Button(self.topFrame, text="Black", fg="Black")
-        # self.blackButton.pack(side=TOP, anchor=NW)
-        # self.entry1 = Entry(self.topFrame)
-        # self.entry1.pack(side=TOP, anchor=NW)
+        self.priceLabel = Label(self.topFrame, text="Price:")
+        self.priceLabel.grid(row=0, column=5, padx=self.padx, pady=self.pady)
 
+        self.priceEntry = Entry(self.topFrame)
+        self.priceEntry.grid(row=0, column=6, padx=self.padx, pady=self.pady)
+
+        self.nameLabel = Label(self.topFrame, text="Name")
+        self.nameLabel.grid(row=1, column=0, padx=self.padx, pady=self.pady)
+
+        self.baseLabel = Label(self.topFrame, text="Base")
+        self.baseLabel.grid(row=1, column=1, padx=self.padx, pady=self.pady)
+
+        self.firstNameEntry = Entry(self.topFrame)
+        self.firstNameEntry.grid(row=2, column=0, padx=self.padx, pady=self.pady)
+
+        self.firstBaseEntry = Entry(self.topFrame, state=DISABLED)
+        self.firstBaseEntry.grid(row=2, column=1, padx=self.padx, pady=self.pady)
 
         # BOTTOM FRAME
-        self.bottomFrame = Frame(self, bg="Red")
-        self.bottomFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
+        self.bottomFrame = Frame(self)
+        # self.bottomFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
+        self.bottomFrame.pack(side=BOTTOM, fill=BOTH)
 
-        self.addButton = Button(self.bottomFrame, text="Add", fg="Red", command=self.addEntry)
+        self.addButton = Button(self.bottomFrame, text="Add", fg="Red", command=self.addEntry, width=40, height=10)
         self.addButton.pack(side=LEFT)
 
+        self.printButton = Button(self.bottomFrame, text="Print", fg="Blue", command=self.printEntries, width=40, height=10)
+        self.printButton.pack(side=RIGHT)
+
     def addEntry(self):
-        entryRow = list()
-        for i in range(self.columnNum):
-            oneEntry = Entry(self.topFrame)
-            oneEntry.grid(row = self.currentRow, column = i)
-        # topEntry = Entry(self.topFrame)
-        # topEntry.insert(END, str(len(self.entryList)))
-        # topEntry.pack(side=TOP, anchor=NW)
-        # self.entryList.append(topEntry)
+        # entryRow = list()
+        # for i in range(self.columnNum):
+        #     oneEntry = Entry(self.topFrame)
+        #     oneEntry.grid(row = self.currentRow, column = i, padx=self.padx, pady=self.pady)
+        if self.currentRow < 12:
 
-        self.currentRow += 1
-        print(self.topFrame.grid_size())
+            nameEntry = Entry(self.topFrame)
+            nameEntry.grid(row = self.currentRow, column = 0, padx=self.padx, pady=self.pady)
 
-    def showImg(self):
-        load = Image.open("pic.jpg").resize((100, 100))
-        render = ImageTk.PhotoImage(load)
+            baseEntry = Entry(self.topFrame, state=DISABLED)
+            baseEntry.grid(row = self.currentRow, column = 1, padx=self.padx, pady=self.pady)
 
-        img = Label(self, image=render)
-        img.image = render
-        img.place(x=0, y=0)
+            self.currentRow += 1
+        # print(self.topFrame.grid_size())
 
-    def showText(self):
-        text = Label(self, text="Helloooo")
-        text.pack()
+    def printEntries(self):
+        if self.currentRow > 0:
+            for i in range(self.currentRow):
+                for j in range(self.columnNum):
+                    temp = self.topFrame.grid_slaves(row=i, column=j)[0]
+                    print(temp.get())
 
     def client_exit(self):
         exit()

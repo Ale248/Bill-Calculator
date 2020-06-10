@@ -8,11 +8,14 @@ class Window(Frame):
         self.init_window()
 
     def init_window(self):
-        self.padx = 5
-        self.pady = 5
+        self.padx = 3
+        self.pady = 3
+
+        self.buttonWidth = 27
+        self.buttonHeight = 10
 
         self.entryList = list()
-        self.columnNum = 3
+        self.currentColumn = 3
         self.currentRow = 3
 
         self.master.title("TMobile Bill Calculator")
@@ -52,14 +55,45 @@ class Window(Frame):
         # self.bottomFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
         self.bottomFrame.pack(side=BOTTOM, fill=BOTH)
 
-        self.addPersonButton = Button(self.bottomFrame, text="Add line", fg="Red", command=self.addEntry, width=36, height=10)
-        self.addPersonButton.pack(side=LEFT, padx=3)
+        # self.addPersonButton = Button(self.bottomFrame, text="Add line", fg="Red", command=self.addEntry, width=27, height=10)
+        self.addPersonButton = self.makeBottomButton(self.bottomFrame, "Add line", self.addEntry)
+        self.addPersonButton.pack(side=LEFT, padx=1)
 
-        self.printButton = Button(self.bottomFrame, text="Print", fg="Blue", command=self.printEntries, width=36, height=10)
-        self.printButton.pack(side=LEFT, padx=3)
+        # self.addColumnButton = Button(self.bottomFrame, text="Add column", fg="Black", command=self.addColumn, width=27, height=10)
+        self.addColumnButton = self.makeBottomButton(self.bottomFrame, "Add column", self.addColumn)
+        self.addColumnButton.pack(side=LEFT, padx=1)
 
-        self.calculateButton = Button(self.bottomFrame, text="Calculate", fg="Black", command=self.calculateEntries, width=36, height=10)
-        self.calculateButton.pack(side=LEFT, padx=3)
+        # self.printButton = Button(self.bottomFrame, text="Print", fg="Blue", command=self.printEntries, width=27, height=10)
+        self.printButton = self.makeBottomButton(self.bottomFrame, "Print", self.printEntries)
+        self.printButton.pack(side=LEFT, padx=1)
+
+        # self.calculateButton = Button(self.bottomFrame, text="Calculate", fg="Black", command=self.calculateEntries, width=27, height=10)
+        self.calculateButton = self.makeBottomButton(self.bottomFrame, "Calculate", self.calculateEntries)
+        self.calculateButton.pack(side=LEFT, padx=1)
+
+    def makeBottomButton(self, frame, text, method):
+        return Button(frame, text=text, command=method, width=self.buttonWidth, height=self.buttonHeight)
+
+    def addColumn(self):
+        # newColumnTitle = Entry(self.topFrame)
+        # newColumnTitle.grid(row=0, column=self.currentColumn-1, padx=self.padx, pady=self.pady)
+        # for i in range(self.currentRow):
+
+        # Max column is 6
+        if self.currentColumn < 6:
+            # Move the last column to the next one
+            for i in range(1, self.currentRow):
+                temp = self.topFrame.grid_slaves(row=i, column=self.currentColumn-1)[0]
+                temp.grid(row=i, column=self.currentColumn, padx=self.padx, pady=self.pady)
+
+            # Insert column in place of the previous one
+            newColumnTitle = Entry(self.topFrame, justify='center')
+            newColumnTitle.grid(row=1, column=self.currentColumn-1, padx=self.padx, pady=self.pady)
+            for i in range(2, self.currentRow):
+                temp = Entry(self.topFrame)
+                temp.grid(row=i, column=self.currentColumn-1, padx=self.padx, pady=self.pady)
+
+            self.currentColumn += 1
 
 
     def calculateEntries(self):

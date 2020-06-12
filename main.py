@@ -75,11 +75,39 @@ class Window(Frame):
         # self.bottomFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
         self.bottomFrame.pack(side=BOTTOM, fill=BOTH)
 
-        self.addPersonButton = self.makeBottomButton(self.bottomFrame, "Add line", self.addEntry)
-        self.addPersonButton.pack(side=LEFT, padx=1)
+        # self.addPersonButton = self.makeBottomButton(self.bottomFrame, "Add line", self.addEntry)
+        # self.addPersonButton.pack(side=LEFT, padx=1)
 
-        self.addColumnButton = self.makeBottomButton(self.bottomFrame, "Add column", self.addColumn)
-        self.addColumnButton.pack(side=LEFT, padx=1)
+        # Frame for add line and remove line
+        # ----------
+        self.lineFrame = Frame(self.bottomFrame)
+        self.lineFrame.pack(side=LEFT, fill=BOTH)
+
+        # self.addPersonButton = self.makeBottomButton(self.lineFrame, "Add line", self.addEntry)
+        self.addPersonButton = Button(self.lineFrame, text="Add line", command=self.addEntry, width=self.buttonWidth, height=int(self.buttonHeight/2), bg="Green")
+        self.addPersonButton.pack(side=TOP)
+
+        self.removePersonButton = Button(self.lineFrame, text="Remove line", command=self.removeEntry, width=self.buttonWidth, height=int(self.buttonHeight/2), bg="Red")
+        self.removePersonButton.pack(side=TOP)
+        # ----------
+
+        # Frame for add column and remove column
+        # ----------
+        self.columnFrame = Frame(self.bottomFrame)
+        self.columnFrame.pack(side=LEFT, fill=BOTH)
+
+        # self.addPersonButton = self.makeBottomButton(self.lineFrame, "Add line", self.addEntry)
+        self.addColumnButton = Button(self.columnFrame, text="Add column", command=self.addColumn, width=self.buttonWidth, height=int(self.buttonHeight/2), bg="Green")
+        self.addColumnButton.pack(side=TOP)
+
+        self.removeColumnButton = Button(self.columnFrame, text="Remove column", command=self.removeColumn, width=self.buttonWidth, height=int(self.buttonHeight/2), bg="Red")
+        self.removeColumnButton.pack(side=TOP)
+
+
+
+        # ----------
+        # self.addColumnButton = self.makeBottomButton(self.bottomFrame, "Add column", self.addColumn)
+        # self.addColumnButton.pack(side=LEFT, padx=1)
 
         self.printButton = self.makeBottomButton(self.bottomFrame, "Print", self.printEntries)
         self.printButton.pack(side=LEFT, padx=1)
@@ -87,8 +115,18 @@ class Window(Frame):
         self.calculateButton = self.makeBottomButton(self.bottomFrame, "Calculate", self.calculateEntries)
         self.calculateButton.pack(side=LEFT, padx=1)
 
+
+    def removeColumn(self):
+        pass
+
+
+    def removeEntry(self):
+        pass
+
+
     def makeBottomButton(self, frame, text, method):
         return Button(frame, text=text, command=method, width=self.buttonWidth, height=self.buttonHeight)
+
 
     def addColumn(self):
         # Max column is 6

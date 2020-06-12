@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import messagebox
+# from tkinter.messagebox import showinfo
 from PIL import ImageTk,Image
 
 class Window(Frame):
@@ -15,8 +17,10 @@ class Window(Frame):
         self.buttonHeight = 10
 
         self.entryList = list()
-        self.currentColumn = 3
-        self.currentRow = 3
+
+        # Start from 1
+        self.columnLength = 3
+        self.rowLength = 3
 
         self.master.title("TMobile Bill Calculator")
         self.master.resizable(False, False)
@@ -26,11 +30,19 @@ class Window(Frame):
         self.topFrame = Frame(self)
         self.topFrame.pack(side=TOP, fill=BOTH, expand=1)
 
-        self.priceLabel = Label(self.topFrame, text="Price:")
+        self.priceLabel = Label(self.topFrame, text="Base Price:")
         self.priceLabel.grid(row=0, column=2, padx=self.padx, pady=self.pady)
+        # print(type(self.priceLabel))
+        # if isinstance(self.priceLabel, Label):
+        #     print("A Label")
+
 
         self.priceEntry = Entry(self.topFrame)
         self.priceEntry.grid(row=0, column=3, padx=self.padx, pady=self.pady)
+        self.priceEntry.insert(0, "0.00")
+        # print(type(self.priceEntry))
+        # if isinstance(self.priceEntry, Entry):
+        #     print("An Entry")
 
         self.nameLabel = Label(self.topFrame, text="Name")
         self.nameLabel.grid(row=1, column=0, padx=self.padx, pady=self.pady)
@@ -43,31 +55,35 @@ class Window(Frame):
 
         self.firstNameEntry = Entry(self.topFrame)
         self.firstNameEntry.grid(row=2, column=0, padx=self.padx, pady=self.pady)
+        self.firstNameEntry.insert(0, "Line_1")
 
-        self.firstBaseEntry = Entry(self.topFrame, state=DISABLED)
+        self.firstBaseEntry = Entry(self.topFrame)
         self.firstBaseEntry.grid(row=2, column=1, padx=self.padx, pady=self.pady)
+        self.firstBaseEntry.insert(0, "0.00")
 
-        self.firstTotalEntry = Entry(self.topFrame, state=DISABLED)
+        self.firstTotalEntry = Entry(self.topFrame)
         self.firstTotalEntry.grid(row=2, column=2, padx=self.padx, pady=self.pady)
+        self.firstTotalEntry.insert(0, "0.00")
+
+        self.endTotalEntry = Entry(self.topFrame)
+        self.endTotalEntry.grid(row=12, column=2, padx=self.padx, pady=self.pady)
+        self.endTotalEntry.insert(0, "0.00")
+
 
         # BOTTOM FRAME
         self.bottomFrame = Frame(self)
         # self.bottomFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
         self.bottomFrame.pack(side=BOTTOM, fill=BOTH)
 
-        # self.addPersonButton = Button(self.bottomFrame, text="Add line", fg="Red", command=self.addEntry, width=27, height=10)
         self.addPersonButton = self.makeBottomButton(self.bottomFrame, "Add line", self.addEntry)
         self.addPersonButton.pack(side=LEFT, padx=1)
 
-        # self.addColumnButton = Button(self.bottomFrame, text="Add column", fg="Black", command=self.addColumn, width=27, height=10)
         self.addColumnButton = self.makeBottomButton(self.bottomFrame, "Add column", self.addColumn)
         self.addColumnButton.pack(side=LEFT, padx=1)
 
-        # self.printButton = Button(self.bottomFrame, text="Print", fg="Blue", command=self.printEntries, width=27, height=10)
         self.printButton = self.makeBottomButton(self.bottomFrame, "Print", self.printEntries)
         self.printButton.pack(side=LEFT, padx=1)
 
-        # self.calculateButton = Button(self.bottomFrame, text="Calculate", fg="Black", command=self.calculateEntries, width=27, height=10)
         self.calculateButton = self.makeBottomButton(self.bottomFrame, "Calculate", self.calculateEntries)
         self.calculateButton.pack(side=LEFT, padx=1)
 
@@ -75,55 +91,96 @@ class Window(Frame):
         return Button(frame, text=text, command=method, width=self.buttonWidth, height=self.buttonHeight)
 
     def addColumn(self):
-        # newColumnTitle = Entry(self.topFrame)
-        # newColumnTitle.grid(row=0, column=self.currentColumn-1, padx=self.padx, pady=self.pady)
-        # for i in range(self.currentRow):
-
         # Max column is 6
-        if self.currentColumn < 6:
+        if self.columnLength < 6:
             # Move the last column to the next one
-            for i in range(1, self.currentRow):
-                temp = self.topFrame.grid_slaves(row=i, column=self.currentColumn-1)[0]
-                temp.grid(row=i, column=self.currentColumn, padx=self.padx, pady=self.pady)
+            for i in range(1, self.rowLength):
+                temp = self.topFrame.grid_slaves(row=i, column=self.columnLength-1)[0]
+                temp.grid(row=i, column=self.columnLength, padx=self.padx, pady=self.pady)
+
+            temp = self.topFrame.grid_slaves(row=12, column=self.columnLength-1)[0]
+            temp.grid(row=12, column=self.columnLength, padx=self.padx, pady=self.pady)
 
             # Insert column in place of the previous one
             newColumnTitle = Entry(self.topFrame, justify='center')
-            newColumnTitle.grid(row=1, column=self.currentColumn-1, padx=self.padx, pady=self.pady)
-            for i in range(2, self.currentRow):
-                temp = Entry(self.topFrame)
-                temp.grid(row=i, column=self.currentColumn-1, padx=self.padx, pady=self.pady)
+            newColumnTitle.grid(row=1, column=self.columnLength-1, padx=self.padx, pady=self.pady)
 
-            self.currentColumn += 1
+            newColumnTitle.insert(0, "Additional_" + str(self.columnLength-2))
+
+            for i in range(2, self.rowLength):
+                temp = Entry(self.topFrame)
+                temp.grid(row=i, column=self.columnLength-1, padx=self.padx, pady=self.pady)
+                temp.insert(0, "0.00")
+
+            self.columnLength += 1
 
 
     def calculateEntries(self):
-        pass
+        try:
+            basePrice = float(self.priceEntry.get())
+            numLine = self.rowLength - 2
+
+            # Calculate and display individual price
+            individualPrice = basePrice / numLine
+            for i in range(2, self.rowLength):
+                temp = self.topFrame.grid_slaves(row=i, column=1)[0]
+                self.setEntry(temp, self.formatPrice(individualPrice))
+                temp.config(state=DISABLED)
+
+            # Calculate and display the total for each line
+            totalPriceList = list()
+            for i in range(2, self.rowLength):
+                totalPrice = individualPrice
+                for j in range(2, self.columnLength):
+                    temp = self.topFrame.grid_slaves(row=i, column=j)[0]
+                    if j == self.columnLength - 1:
+                        self.setEntry(temp, self.formatPrice(totalPrice))
+                        totalPriceList.append(totalPrice)
+                    else:
+                        totalPrice += float(temp.get())
+                totalPrice = individualPrice
+
+            # Calculate and display the grand total (total of everything)
+            grandTotal = sum(totalPriceList)
+            self.setEntry(self.endTotalEntry, self.formatPrice(grandTotal))
+            self.endTotalEntry.config(state=DISABLED)
+
+
+        except ValueError:
+            messagebox.showwarning("Warning", "Please enter numbers only other than the names!")
+
+        # print(basePrice)
+
+    def setEntry(self, entry, text):
+        if str(entry['state']) == "disabled":
+            entry.config(state=NORMAL)
+        entry.delete(0, 'end')
+        entry.insert(0, text)
+
+    def formatPrice(self, num):
+        return "{:.2f}".format(num)
 
     def addEntry(self):
-        # entryRow = list()
-        # for i in range(self.columnNum):
-        #     oneEntry = Entry(self.topFrame)
-        #     oneEntry.grid(row = self.currentRow, column = i, padx=self.padx, pady=self.pady)
-        if self.currentRow < 12:
+        # Max line is 10
+        if self.rowLength < 12:
+            for j in range(self.columnLength):
+                tempEntry = Entry(self.topFrame)
+                tempEntry.grid(row=self.rowLength, column=j, padx=self.padx, pady=self.pady)
+                if j == 0:
+                    tempEntry.insert(0, "Line_" + str(self.rowLength - 1))
+                else:
+                    tempEntry.insert(0, "0.00")
 
-            nameEntry = Entry(self.topFrame)
-            nameEntry.grid(row=self.currentRow, column=0, padx=self.padx, pady=self.pady)
-
-            baseEntry = Entry(self.topFrame, state=DISABLED)
-            baseEntry.grid(row=self.currentRow, column=1, padx=self.padx, pady=self.pady)
-
-            totalEntry = Entry(self.topFrame, state=DISABLED)
-            totalEntry.grid(row=self.currentRow, column=2, padx=self.padx, pady=self.pady)
-
-            self.currentRow += 1
-        # print(self.topFrame.grid_size())
+            self.rowLength += 1
+            self.calculateEntries()
 
     def printEntries(self):
-        if self.currentRow > 0:
-            for i in range(self.currentRow):
-                for j in range(self.columnNum):
-                    temp = self.topFrame.grid_slaves(row=i, column=j)[0]
-                    print(temp.get())
+        pass
+        # if self.rowLength > 0:
+        #     for i in range(self.rowLength):
+        #         for j in range(self.columnLength):
+        #             temp = self.topFrame.grid_slaves(row=i, column=j)[0]
+        #             print(temp.get())
 
     def client_exit(self):
         exit()
@@ -145,7 +202,6 @@ if __name__ == '__main__':
 
     window.geometry("{}x{}+{}+{}".format(windowWidth, windowHeight, positionRight, positionDown))
     # -------------
-
 
     app = Window(window)
     window.mainloop()

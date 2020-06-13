@@ -3,6 +3,9 @@ from tkinter import messagebox
 # from tkinter.messagebox import showinfo
 from PIL import ImageTk,Image
 
+import pyperclip
+import datetime
+
 class Window(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
@@ -10,6 +13,14 @@ class Window(Frame):
         self.init_window()
 
     def init_window(self):
+        self.now = datetime.datetime.now()
+        self.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+          'August', 'September', 'October', 'November', 'December']
+
+        self.years = list()
+        for year in range(self.now.year - 10, self.now.year + 11):
+            self.years.append(year)
+
         self.padx = 3
         self.pady = 3
 
@@ -30,19 +41,25 @@ class Window(Frame):
         self.topFrame = Frame(self)
         self.topFrame.pack(side=TOP, fill=BOTH, expand=1)
 
-        self.priceLabel = Label(self.topFrame, text="Base Price:")
-        self.priceLabel.grid(row=0, column=2, padx=self.padx, pady=self.pady)
-        # print(type(self.priceLabel))
-        # if isinstance(self.priceLabel, Label):
-        #     print("A Label")
+        self.dateLabel = Label(self.topFrame, text="Month and Year:")
+        self.dateLabel.grid(row=0, column=0, padx=self.padx, pady=self.pady, sticky=E)
 
+        self.monthsVariable = StringVar(self.topFrame)
+        self.monthsVariable.set(self.months[self.now.month - 1])
+        self.monthOption = OptionMenu(self.topFrame, self.monthsVariable, *self.months)
+        self.monthOption.grid(row=0, column=1, padx=0, pady=self.pady, sticky=E)
+
+        self.yearsVariable = StringVar(self.topFrame)
+        self.yearsVariable.set(self.years[10])
+        self.yearOption = OptionMenu(self.topFrame, self.yearsVariable, *self.years)
+        self.yearOption.grid(row=0, column=2, padx=0, pady=self.pady, sticky=W)
+
+        self.priceLabel = Label(self.topFrame, text="Base Price:")
+        self.priceLabel.grid(row=0, column=3, padx=self.padx, pady=self.pady)
 
         self.priceEntry = Entry(self.topFrame)
-        self.priceEntry.grid(row=0, column=3, padx=self.padx, pady=self.pady)
+        self.priceEntry.grid(row=0, column=4, padx=self.padx, pady=self.pady)
         self.priceEntry.insert(0, "0.00")
-        # print(type(self.priceEntry))
-        # if isinstance(self.priceEntry, Entry):
-        #     print("An Entry")
 
         self.nameLabel = Label(self.topFrame, text="Name")
         self.nameLabel.grid(row=1, column=0, padx=self.padx, pady=self.pady)
@@ -117,11 +134,25 @@ class Window(Frame):
 
 
     def removeColumn(self):
-        pass
+        if self.columnLength > 3:
+            for i in range(1, self.rowLength):
+                temp = self.topFrame.grid_slaves(row=i, column=self.columnLength-2)[0]
+                temp.destroy()
+
+                tempA = self.topFrame.grid_slaves(row=i, column=self.columnLength-1)[0]
+                tempA.grid(row=i, column=self.columnLength-2, padx=self.padx, pady=self.pady)
+
+            self.endTotalEntry.grid(row=12, column=self.columnLength-2, padx=self.padx, pady=self.pady)
+            self.columnLength -= 1
 
 
     def removeEntry(self):
-        pass
+        if self.rowLength > 3:
+            for j in range(self.columnLength):
+                temp = self.topFrame.grid_slaves(row=self.rowLength-1, column=j)[0]
+                temp.destroy()
+
+            self.rowLength -= 1
 
 
     def makeBottomButton(self, frame, text, method):

@@ -13,6 +13,8 @@ class Window(Frame):
         self.init_window()
 
     def init_window(self):
+        self.entriesText = ""
+
         self.now = datetime.datetime.now()
         self.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
           'August', 'September', 'October', 'November', 'December']
@@ -126,11 +128,60 @@ class Window(Frame):
         # self.addColumnButton = self.makeBottomButton(self.bottomFrame, "Add column", self.addColumn)
         # self.addColumnButton.pack(side=LEFT, padx=1)
 
-        self.printButton = self.makeBottomButton(self.bottomFrame, "Print", self.printEntries)
-        self.printButton.pack(side=LEFT, padx=1)
+        # self.printButton = self.makeBottomButton(self.bottomFrame, "Print", self.printEntries)
+        # self.printButton.pack(side=LEFT, padx=1)
+
+        self.clipboardButton = self.makeBottomButton(self.bottomFrame, "Copy to clipboard", self.copyEntries)
+        self.clipboardButton.pack(side=LEFT, padx=1)
 
         self.calculateButton = self.makeBottomButton(self.bottomFrame, "Calculate", self.calculateEntries)
         self.calculateButton.pack(side=LEFT, padx=1)
+
+
+    def copyEntries(self):
+        # may 2020: (284.06)
+        # 6 people = 209.89 = 34.99 each
+        # medi = 34.99
+        # ander = 34.99 + 16.96 + 57.21 = 109.16
+        # ale = 34.99
+        # albert = 34.99
+        # martin = 34.99
+        # george = 34.99
+
+        # pyperclip.copy("")
+
+        self.calculateEntries()
+        result = ""
+        grandTotalString = str(self.endTotalEntry.get())
+        numPeople = str(self.rowLength - 2)
+        basePrice = str(self.priceEntry.get())
+        individualPrice = str(self.topFrame.grid_slaves(row=2, column=1)[0].get())
+
+        currentMonth = self.monthsVariable.get()
+        currentYear = self.yearsVariable.get()
+
+
+        result += "{} {}: ({})\n".format(currentMonth, currentYear, grandTotalString)
+        result += "{} people = {} = {} each\n".format(numPeople, basePrice, individualPrice)
+
+        for i in range(2, self.rowLength):
+            for j in range(self.columnLength):
+                temp = self.topFrame.grid_slaves(row=i, column=j)[0]
+                num = temp.get()
+                # Name
+                if j == 0:
+                    result += "{} = ".format(num)
+                elif j == 1:
+                    result += "{} ".format(num)
+                elif j < self.columnLength - 1:
+                    if float(num) > 0:
+                        result += "+ {} ".format(num)
+                else:
+                    result += "= {}\n".format(num)
+
+
+        print(result)
+
 
 
     def removeColumn(self):
@@ -213,6 +264,9 @@ class Window(Frame):
             grandTotal = sum(totalPriceList)
             self.setEntry(self.endTotalEntry, self.formatPrice(grandTotal))
             self.endTotalEntry.config(state=DISABLED)
+
+            # Formats the base price
+            self.setEntry(self.priceEntry, self.formatPrice(basePrice))
 
 
         except ValueError:

@@ -179,9 +179,7 @@ class Window(Frame):
                 else:
                     result += "= {}\n".format(num)
 
-
-        print(result)
-
+        pyperclip.copy(result)
 
 
     def removeColumn(self):

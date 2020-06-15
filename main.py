@@ -171,15 +171,20 @@ class Window(Frame):
                 # Name
                 if j == 0:
                     result += "{} = ".format(num)
+                # Base
                 elif j == 1:
                     result += "{} ".format(num)
+                # Additional
                 elif j < self.columnLength - 1:
                     if float(num) > 0:
-                        result += "+ {} ".format(num)
+                        columnTitle = self.topFrame.grid_slaves(row=1, column=j)[0]
+                        result += "+ {} ({}) ".format(num, columnTitle.get())
+                # Total
                 else:
                     result += "= {}\n".format(num)
 
         pyperclip.copy(result)
+        print(result)
 
 
     def removeColumn(self):
@@ -251,11 +256,13 @@ class Window(Frame):
                 totalPrice = individualPrice
                 for j in range(2, self.columnLength):
                     temp = self.topFrame.grid_slaves(row=i, column=j)[0]
+                    num = float(temp.get())
+                    self.setEntry(temp, self.formatPrice(num))
                     if j == self.columnLength - 1:
                         self.setEntry(temp, self.formatPrice(totalPrice))
                         totalPriceList.append(totalPrice)
                     else:
-                        totalPrice += float(temp.get())
+                        totalPrice += num
                 totalPrice = individualPrice
 
             # Calculate and display the grand total (total of everything)
@@ -267,8 +274,9 @@ class Window(Frame):
             self.setEntry(self.priceEntry, self.formatPrice(basePrice))
 
 
-        except ValueError:
+        except ValueError as ve:
             messagebox.showwarning("Warning", "Please enter numbers only other than the names!")
+            print(ve)
 
         # print(basePrice)
 
@@ -295,13 +303,6 @@ class Window(Frame):
             self.rowLength += 1
             self.calculateEntries()
 
-    def printEntries(self):
-        pass
-        # if self.rowLength > 0:
-        #     for i in range(self.rowLength):
-        #         for j in range(self.columnLength):
-        #             temp = self.topFrame.grid_slaves(row=i, column=j)[0]
-        #             print(temp.get())
 
     def client_exit(self):
         exit()

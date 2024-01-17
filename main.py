@@ -35,7 +35,7 @@ class Window(Frame):
         self.columnLength = 3
         self.rowLength = 3
 
-        self.master.title("TMobile Bill Calculator")
+        self.master.title("Phone Bill Calculator")
         self.master.resizable(False, False)
         self.pack(fill=BOTH, expand=1)
 
